@@ -1,7 +1,6 @@
 import { GoogleMap } from "@react-google-maps/api";
 import Territory from "./Terriotory";
-import { Fragment, useEffect, useState } from "react";
-import { MapLabel } from "./MapLabel";
+import { useEffect, useState } from "react";
 
 const Map = () => {
   const [geojsons, setGeojsons] = useState([]);
@@ -27,10 +26,11 @@ const Map = () => {
       {geojsons.map((geojson) => {
         const TerritoryNumber = geojson[0].features[0].properties.name;
         return (
-          <Fragment key={TerritoryNumber}>
-            <Territory geojson={geojson} />
-            <MapLabel geojson={geojson} label={TerritoryNumber.toString()} />
-          </Fragment>
+          <Territory
+            key={TerritoryNumber}
+            geojson={geojson}
+            number={TerritoryNumber}
+          />
         );
       })}
     </GoogleMap>

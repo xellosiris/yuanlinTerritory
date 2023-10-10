@@ -1,6 +1,8 @@
 import { Polygon } from "@react-google-maps/api";
-import { useState } from "react";
-const Territory = ({ geojson }) => {
+import { Fragment, useState } from "react";
+import { MapLabel } from "./MapLabel";
+
+const Territory = ({ geojson, number }) => {
   const path = geojson[0].features[0].geometry.coordinates[0].map((c) => ({
     lat: c[1],
     lng: c[0],
@@ -39,12 +41,15 @@ const Territory = ({ geojson }) => {
     }));
   };
   return (
-    <Polygon
-      path={path}
-      options={options}
-      onMouseOver={onMouseOver}
-      onMouseOut={onMouseOut}
-    />
+    <Fragment>
+      <Polygon
+        path={path}
+        options={options}
+        onMouseOver={onMouseOver}
+        onMouseOut={onMouseOut}
+      />
+      <MapLabel geojson={geojson} label={number.toString()} />
+    </Fragment>
   );
 };
 
