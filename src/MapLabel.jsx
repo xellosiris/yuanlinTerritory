@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef } from "react";
 
 export const MapLabel = ({ geojson, position, label, zoom }) => {
   const map = useGoogleMap();
-
   // useEffect(() => {
   //   if (map) {
   //     const $ = map.addListener("zoom_changed", () => {
@@ -23,6 +22,7 @@ export const MapLabel = ({ geojson, position, label, zoom }) => {
       };
     }
   }, [geojson]);
+
   const markerRef = useRef();
 
   useEffect(() => {

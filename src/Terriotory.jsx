@@ -1,10 +1,12 @@
 import { Polygon } from "@react-google-maps/api";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useMemo } from "react";
+import polylabel from "polylabel";
 import { MapLabel } from "./MapLabel";
 import { useGoogleMap } from "@react-google-maps/api";
 const Territory = ({ geojson, number }) => {
   const map = useGoogleMap();
   const [zoom, setZoom] = useState(map?.getZoom());
+  const [bounds, setBounds] = useState(map?.getBounds());
   const path = geojson[0].features[0].geometry.coordinates[0].map((c) => ({
     lat: c[1],
     lng: c[0],
@@ -50,6 +52,26 @@ const Territory = ({ geojson, number }) => {
       return () => $.remove();
     }
   }, [map]);
+
+  useEffect(() => {
+    if (map) {
+      const $ = map.addListener("bounds_changed", () => {
+        setBounds(map.getBounds());
+      });
+      return () => $.remove();
+    }
+  }, [map]);
+
+  const centerSpot = useMemo(() => {
+    if (!!geojson) {
+      const p = polylabel(geojson[0].features[0].geometry.coordinates);
+      return {
+        lat: p[1],
+        lng: p[0],
+      };
+    }
+  }, [geojson]);
+
   return (
     <Fragment>
       <Polygon
@@ -58,7 +80,7 @@ const Territory = ({ geojson, number }) => {
         onMouseOver={onMouseOver}
         onMouseOut={onMouseOut}
       />
-      {zoom > 13 && (
+      {zoom > 13 && bounds.contains(centerSpot) && (
         <MapLabel geojson={geojson} label={number.toString()} zoom={zoom} />
       )}
     </Fragment>
