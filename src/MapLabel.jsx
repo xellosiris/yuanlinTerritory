@@ -4,15 +4,6 @@ import { useEffect, useMemo, useRef } from "react";
 
 export const MapLabel = ({ geojson, position, label, zoom }) => {
   const map = useGoogleMap();
-  // useEffect(() => {
-  //   if (map) {
-  //     const $ = map.addListener("zoom_changed", () => {
-  //       setZoom(map.getZoom());
-  //     });
-  //     return () => $.remove();
-  //   }
-  // }, [map]);
-
   const centerSpot = useMemo(() => {
     if (!!geojson) {
       const p = polylabel(geojson[0].features[0].geometry.coordinates);
@@ -27,6 +18,7 @@ export const MapLabel = ({ geojson, position, label, zoom }) => {
 
   useEffect(() => {
     markerRef.current = new window.google.maps.Marker({
+      optimized: true,
       position: centerSpot ?? position,
       label: {
         text: label,
