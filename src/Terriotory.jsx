@@ -74,13 +74,15 @@ const Territory = ({ geojson, number }) => {
 
   return (
     <Fragment>
-      <Polygon
-        path={path}
-        options={options}
-        onMouseOver={onMouseOver}
-        onMouseOut={onMouseOut}
-      />
-      {zoom > 13 && bounds.contains(centerSpot) && (
+      {!!bounds && path.filter((p) => bounds.contains(p).length > 0) && (
+        <Polygon
+          path={path}
+          options={options}
+          onMouseOver={onMouseOver}
+          onMouseOut={onMouseOut}
+        />
+      )}
+      {zoom > 13 && !!bounds && bounds.contains(centerSpot) && (
         <MapLabel geojson={geojson} label={number.toString()} zoom={zoom} />
       )}
     </Fragment>

@@ -19,7 +19,7 @@ const Map = () => {
 
   return (
     <GoogleMap
-      zoom={12}
+      zoom={15}
       center={{ lat: 23.948507, lng: 120.45138 }}
       mapContainerClassName="w-screen h-screen"
     >
