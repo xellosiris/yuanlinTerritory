@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.hide-number .territory-number {
+  display: none;
+}
+
+.territory-number {
+  font-size: var(--number-size, 20px) !important;
+}
