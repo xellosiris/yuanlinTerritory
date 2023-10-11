@@ -80,7 +80,7 @@ const Territory = ({ geojson, number }) => {
         onMouseOver={onMouseOver}
         onMouseOut={onMouseOut}
       />
-      {zoom > 13 && (
+      {zoom > 13 && bounds.contains(centerSpot) && (
         <MapLabel geojson={geojson} label={number.toString()} zoom={zoom} />
       )}
     </Fragment>
