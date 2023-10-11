@@ -1,19 +1,18 @@
 import { useGoogleMap } from "@react-google-maps/api";
 import polylabel from "polylabel";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
-export const MapLabel = ({ geojson, position, label }) => {
+export const MapLabel = ({ geojson, position, label, zoom }) => {
   const map = useGoogleMap();
-  const [zoom, setZoom] = useState(map?.getZoom());
 
-  useEffect(() => {
-    if (map) {
-      const $ = map.addListener("zoom_changed", () => {
-        setZoom(map.getZoom());
-      });
-      return () => $.remove();
-    }
-  }, [map]);
+  // useEffect(() => {
+  //   if (map) {
+  //     const $ = map.addListener("zoom_changed", () => {
+  //       setZoom(map.getZoom());
+  //     });
+  //     return () => $.remove();
+  //   }
+  // }, [map]);
 
   const centerSpot = useMemo(() => {
     if (!!geojson) {
@@ -31,7 +30,7 @@ export const MapLabel = ({ geojson, position, label }) => {
       position: centerSpot ?? position,
       label: {
         text: label,
-        fontSize: "18px",
+        fontSize: "20px",
       },
       map,
       icon: "t.png",
@@ -43,7 +42,7 @@ export const MapLabel = ({ geojson, position, label }) => {
   }, []);
 
   const labelFontSize = useMemo(() => {
-    return zoom > 15 ? "50px" : zoom > 13 ? "20px" : "0px";
+    return zoom > 15 ? "50px" : "20px";
   }, [zoom]);
 
   useEffect(() => {

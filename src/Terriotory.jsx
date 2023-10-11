@@ -1,8 +1,10 @@
 import { Polygon } from "@react-google-maps/api";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { MapLabel } from "./MapLabel";
-
+import { useGoogleMap } from "@react-google-maps/api";
 const Territory = ({ geojson, number }) => {
+  const map = useGoogleMap();
+  const [zoom, setZoom] = useState(map?.getZoom());
   const path = geojson[0].features[0].geometry.coordinates[0].map((c) => ({
     lat: c[1],
     lng: c[0],
@@ -40,6 +42,14 @@ const Territory = ({ geojson, number }) => {
       strokeWeight: 1.2,
     }));
   };
+  useEffect(() => {
+    if (map) {
+      const $ = map.addListener("zoom_changed", () => {
+        setZoom(map.getZoom());
+      });
+      return () => $.remove();
+    }
+  }, [map]);
   return (
     <Fragment>
       <Polygon
@@ -48,7 +58,9 @@ const Territory = ({ geojson, number }) => {
         onMouseOver={onMouseOver}
         onMouseOut={onMouseOut}
       />
-      <MapLabel geojson={geojson} label={number.toString()} />
+      {zoom > 13 && (
+        <MapLabel geojson={geojson} label={number.toString()} zoom={zoom} />
+      )}
     </Fragment>
   );
 };
