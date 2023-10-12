@@ -1,19 +1,19 @@
-import { useGoogleMap } from '@react-google-maps/api';
-import polylabel from 'polylabel';
-import { useEffect, useMemo, useRef } from 'react';
+import { useGoogleMap } from "@react-google-maps/api";
+import polylabel from "polylabel";
+import { useEffect, useMemo, useRef } from "react";
 
-export const MapLabel = ({ geojson, position, label }) => {
+export const MapLabel = ({ territory, position }) => {
   const map = useGoogleMap();
-
+  const { name, coordinates, lastStartDate, lastEndDate } = territory;
   const centerSpot = useMemo(() => {
-    if (geojson) {
-      const p = polylabel(geojson[0].features[0].geometry.coordinates);
+    if (territory) {
+      const p = polylabel([coordinates.map(({ lat, lng }) => [lng, lat, 0.0])]);
       return {
         lat: p[1],
         lng: p[0],
       };
     }
-  }, [geojson]);
+  }, [territory]);
 
   const markerRef = useRef();
 
@@ -22,11 +22,14 @@ export const MapLabel = ({ geojson, position, label }) => {
       optimized: true,
       position: centerSpot ?? position,
       label: {
-        className: 'territory-number',
-        text: label,
+        className: "territory-number",
+        text: name.toString(),
       },
       map,
-      icon: 'https://maps.gstatic.com/mapfiles/transparent.png',
+      icon:
+        !!lastStartDate && !lastEndDate
+          ? null
+          : "https://maps.gstatic.com/mapfiles/transparent.png",
     });
 
     return () => {
@@ -37,11 +40,11 @@ export const MapLabel = ({ geojson, position, label }) => {
   useEffect(() => {
     if (markerRef.current) {
       markerRef.current.setLabel({
-        className: 'territory-number',
-        text: label,
+        className: "territory-number",
+        text: name.toString(),
       });
     }
-  }, [label]);
+  }, [name]);
 
   useEffect(() => {
     if (markerRef.current) {

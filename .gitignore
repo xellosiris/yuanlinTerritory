@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+territories/admin.json
+.gitignore
+.gitignore
+territories/test.ipynb

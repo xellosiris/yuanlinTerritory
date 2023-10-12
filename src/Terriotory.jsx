@@ -1,39 +1,30 @@
-import { Polygon } from '@react-google-maps/api';
-import { Fragment, useMemo, useState } from 'react';
-import { MapLabel } from './MapLabel';
-
+import { Polygon } from "@react-google-maps/api";
+import { Fragment, useMemo, useState } from "react";
+import { MapLabel } from "./MapLabel";
+import { TerritoryInfo } from "./TerritoryInfo";
 const bgColor = {
-  員林: '#364583',
-  大村: '#2d681c',
-  溪湖: '#ab4a3e',
-  埔心: '#d8941c',
-  二林: '#88ab10',
-  芳苑: '#364583',
-  大城: '#f3d744',
+  員林: "#364583",
+  大村: "#2d681c",
+  溪湖: "#ab4a3e",
+  埔心: "#d8941c",
+  二林: "#88ab10",
+  芳苑: "#364583",
+  大城: "#f3d744",
 };
 
-const Territory = ({ geojson }) => {
-  const path = useMemo(
-    () =>
-      geojson[0].features[0].geometry.coordinates[0].map((c) => ({
-        lat: c[1],
-        lng: c[0],
-      })),
-    [geojson]
-  );
-
-  const { name, location } = geojson[0].features[0].properties;
+const Territory = ({ territory }) => {
+  const { location, coordinates } = territory;
   const [isHovered, setIsHovered] = useState(false);
-
+  const [territoryInfo, setTerritoryInfo] = useState(null);
   const onMouseOver = () => setIsHovered(true);
   const onMouseOut = () => setIsHovered(false);
 
   const style = useMemo(
     () => ({
-      strokeColor: 'black',
+      strokeColor: "black",
       strokeOpacity: 1,
       strokeWeight: isHovered ? 3 : 1.2,
-      fillColor: isHovered ? 'black' : bgColor[location],
+      fillColor: isHovered ? "black" : bgColor[location],
       fillOpacity: 0.15,
     }),
     [isHovered, location]
@@ -42,12 +33,19 @@ const Territory = ({ geojson }) => {
   return (
     <Fragment>
       <Polygon
-        path={path}
+        path={coordinates}
         options={style}
         onMouseOver={onMouseOver}
         onMouseOut={onMouseOut}
+        onClick={() => setTerritoryInfo(territory)}
       />
-      <MapLabel geojson={geojson} label={name.toString()} />
+      <MapLabel territory={territory} />
+      {!!territoryInfo && (
+        <TerritoryInfo
+          territory={territory}
+          setTerritoryInfo={setTerritoryInfo}
+        />
+      )}
     </Fragment>
   );
 };
