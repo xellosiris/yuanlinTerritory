@@ -13,19 +13,19 @@ const bgColor = {
 };
 
 const Territory = ({ territory }) => {
-  const { location, coordinates } = territory;
+  const { location, coordinates, lastStartDate, lastEndDate } = territory;
   const [isHovered, setIsHovered] = useState(false);
   const [territoryInfo, setTerritoryInfo] = useState(null);
   const onMouseOver = () => setIsHovered(true);
   const onMouseOut = () => setIsHovered(false);
-
+  console.log(lastStartDate);
   const style = useMemo(
     () => ({
       strokeColor: "black",
       strokeOpacity: 1,
       strokeWeight: isHovered ? 3 : 1.2,
       fillColor: isHovered ? "black" : bgColor[location],
-      fillOpacity: 0.15,
+      fillOpacity: !!lastStartDate ? 0.5 : 0.1,
     }),
     [isHovered, location]
   );
