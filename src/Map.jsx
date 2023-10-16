@@ -17,9 +17,19 @@ const Map = () => {
 
   return (
     <GoogleMap
-      zoom={12}
-      center={{ lat: 23.948507, lng: 120.45138 }}
       mapContainerClassName="w-screen h-screen"
+      options={{
+        center: { lat: 23.948507, lng: 120.45138 },
+        zoom: 12,
+        restriction: {
+          latLngBounds: {
+            north: 24.042009,
+            south: 23.810006,
+            east: 120.635806,
+            west: 120.241796,
+          },
+        },
+      }}
     >
       <ZoomHandler />
       {territories.map((territory) => (
