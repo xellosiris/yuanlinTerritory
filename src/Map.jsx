@@ -1,41 +1,71 @@
 import { GoogleMap, useGoogleMap } from "@react-google-maps/api";
-import Territory from "./Terriotory";
+import { collection, getDocs } from "firebase/firestore/lite";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore/lite";
-
+import Panel from "./Panel";
+import Territory from "./Terriotory";
 const Map = () => {
   const [territories, setTerritories] = useState([]);
+  const [selected, setSelected] = useState();
+  const [disableBgColor, setdisableBgColor] = useState(true);
   const getTerritories = async () => {
     const snapshot = await getDocs(collection(db, "Territories"));
     const docs = snapshot.docs.map((doc) => doc.data());
     setTerritories(docs);
   };
+
+  const onSelected = (obj) => {
+    setSelected(obj);
+  };
+
   useEffect(() => {
     getTerritories();
   }, []);
-
   return (
-    <GoogleMap
-      mapContainerClassName="w-screen h-screen"
-      options={{
-        center: { lat: 23.948507, lng: 120.45138 },
-        zoom: 12,
-        restriction: {
-          latLngBounds: {
-            north: 24.042009,
-            south: 23.810006,
-            east: 120.635806,
-            west: 120.241796,
+    <div className="flex">
+      <GoogleMap
+        mapContainerClassName="print:w-full w-3/4 h-screen"
+        options={{
+          center: selected?.center ?? { lat: 23.948507, lng: 120.45138 },
+          zoom: selected?.zoom ?? 12,
+          disableDefaultUI: true,
+          restriction: {
+            latLngBounds: {
+              north: 24.042009,
+              south: 23.810006,
+              east: 120.635806,
+              west: 120.241796,
+            },
           },
-        },
-      }}
-    >
-      <ZoomHandler />
-      {territories.map((territory) => (
-        <Territory key={territory.name} territory={territory} />
-      ))}
-    </GoogleMap>
+        }}
+      >
+        <div className="absolute top-0 left-0 text-3xl print:block hidden bg-white p-3">
+          區域號碼：{selected?.name ?? "全體區域"}
+        </div>
+        <ZoomHandler />
+        {!selected &&
+          territories.map((territory) => (
+            <Territory key={territory.name} territory={territory} />
+          ))}
+        {!!selected && (
+          <Territory
+            key={selected}
+            disableBgColor={disableBgColor}
+            territory={territories.find(
+              (territory) => territory.name === selected.name
+            )}
+          />
+        )}
+      </GoogleMap>
+
+      <Panel
+        territories={territories}
+        onSelected={onSelected}
+        disableBgColor={disableBgColor}
+        ondisableBgColor={(b) => setdisableBgColor(b)}
+        seleted={selected}
+      />
+    </div>
   );
 };
 
