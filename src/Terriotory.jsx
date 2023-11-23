@@ -5,16 +5,24 @@ import { TerritoryInfo } from "./TerritoryInfo";
 
 const Territory = ({ territory, disableBgColor }) => {
   const [territoryInfo, setTerritoryInfo] = useState(null);
+  const onSetTerritoryInfo = (territory) => {
+    setTerritoryInfo(territory);
+  };
+
+  const onClose = () => {
+    setTerritoryInfo(null);
+  };
 
   return (
     <Fragment>
-      <MapPolygon territory={territory} disableBgColor={disableBgColor} />
+      <MapPolygon
+        territory={territory}
+        disableBgColor={disableBgColor}
+        onSetTerritoryInfo={onSetTerritoryInfo}
+      />
       <MapLabel territory={territory} />
       {!!territoryInfo && (
-        <TerritoryInfo
-          territory={territory}
-          setTerritoryInfo={setTerritoryInfo}
-        />
+        <TerritoryInfo territory={territory} onClose={onClose} />
       )}
     </Fragment>
   );

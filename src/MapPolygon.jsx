@@ -11,7 +11,11 @@ const bgColor = {
   大城: "#f3d744",
 };
 
-export const MapPolygon = ({ territory, disableBgColor }) => {
+export const MapPolygon = ({
+  territory,
+  disableBgColor,
+  onSetTerritoryInfo,
+}) => {
   const map = useGoogleMap();
   const { location, coordinates, lastStartDate } = territory;
   const [isHovered, setIsHovered] = useState(false);
@@ -45,10 +49,16 @@ export const MapPolygon = ({ territory, disableBgColor }) => {
     const $out = window.google.maps.event.addListener(poly, "mouseout", () => {
       setIsHovered(false);
     });
+
+    const $click = window.google.maps.event.addListener(poly, "click", () => {
+      onSetTerritoryInfo(territory);
+    });
+
     return () => {
       poly.setMap(null);
       window.google.maps.event.removeListener($over);
       window.google.maps.event.removeListener($out);
+      window.google.maps.event.removeListener($click);
     };
   }, [coordinates, map, styles]);
 

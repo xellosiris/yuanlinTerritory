@@ -1,11 +1,9 @@
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 
-export const TerritoryInfo = ({ territory, setTerritoryInfo }) => {
+export const TerritoryInfo = ({ territory, onClose }) => {
   const { name, person, lastStartDate, lastEndDate, lastPeriod, catgory } =
     territory;
-  const onClose = () => {
-    setTerritoryInfo(null);
-  };
+
   return (
     <Dialog fullWidth open onClose={onClose}>
       <DialogTitle>區域資訊 (號碼：{name})</DialogTitle>
