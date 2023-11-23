@@ -46,8 +46,11 @@ const Panel = ({
     );
   };
   return (
-    <div className="w-1/4 h-[calc(100vh-87px)] print:hidden block">
-      <List className="h-full overflow-y-auto" subheader={<li />}>
+    <div className="w-1/4 print:hidden block">
+      <List
+        className="h-[calc(100vh-100px)] overflow-y-auto"
+        subheader={<li />}
+      >
         <ListItem disablePadding>
           <ListItemButton
             selected={seleted === null}
