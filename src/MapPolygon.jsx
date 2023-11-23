@@ -25,7 +25,7 @@ export const MapPolygon = ({
   const styles = {
     strokeColor: "black",
     strokeOpacity: 1,
-    strokeWeight: isHovered ? 3 : 1.2,
+    strokeWeight: disableBgColor || isHovered ? 3 : 1.2,
     fillColor: isHovered ? "black" : bgColor[location],
     fillOpacity: disableBgColor ? 0 : lastStartDate ? 0.5 : 0.1,
   };

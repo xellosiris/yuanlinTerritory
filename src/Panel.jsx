@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  ListSubheader,
 } from "@mui/material";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
@@ -17,6 +18,12 @@ const Panel = ({
   disableBgColor,
   ondisableBgColor,
 }) => {
+  const groupedTerritories = Object.groupBy(
+    territories.sort((a, b) => a.name - b.name),
+    ({ location }) => location
+  );
+  const locations = ["員林", "大村", "埔心", "溪湖", "二林", "芳苑", "大城"];
+
   const getCenter = (coordinates) => {
     const p = polylabel([coordinates.map(({ lat, lng }) => [lng, lat, 0.0])]);
     return {
@@ -35,7 +42,7 @@ const Panel = ({
   };
   return (
     <div className="w-1/4 h-[calc(100vh-87px)] print:hidden block">
-      <List className="h-full overflow-y-auto">
+      <List className="h-full overflow-y-auto" subheader={<li />}>
         <ListItem disablePadding>
           <ListItemButton
             selected={seleted === null}
@@ -44,23 +51,29 @@ const Panel = ({
             <ListItemText>全體區域</ListItemText>
           </ListItemButton>
         </ListItem>
-        {territories
-          .sort((a, b) => a.name - b.name)
-          .map((territory) => (
-            <ListItem disablePadding key={territory.name}>
-              <ListItemButton
-                selected={territory.name === seleted?.name}
-                onClick={() =>
-                  onSelected({
-                    name: territory.name,
-                    center: getCenter(territory.coordinates),
-                    zoom: 16,
-                  })
-                }
-              >
-                <ListItemText>{territory.name}號</ListItemText>
-              </ListItemButton>
-            </ListItem>
+        {JSON.stringify(groupedTerritories) !== "{}" &&
+          locations.map((location) => (
+            <li key={location}>
+              <ul>
+                <ListSubheader>{location}</ListSubheader>
+                {groupedTerritories[location].map((territory) => (
+                  <ListItem disablePadding key={territory.name}>
+                    <ListItemButton
+                      selected={territory.name === seleted?.name}
+                      onClick={() =>
+                        onSelected({
+                          name: territory.name,
+                          center: getCenter(territory.coordinates),
+                          zoom: 16,
+                        })
+                      }
+                    >
+                      <ListItemText>{territory.name}號</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </ul>
+            </li>
           ))}
       </List>
       <div className="space-y-2">

@@ -30,14 +30,6 @@ const Map = () => {
           center: selected?.center ?? { lat: 23.948507, lng: 120.45138 },
           zoom: selected?.zoom ?? 12,
           disableDefaultUI: true,
-          restriction: {
-            latLngBounds: {
-              north: 24.042009,
-              south: 23.810006,
-              east: 120.635806,
-              west: 120.241796,
-            },
-          },
         }}
       >
         <div className="absolute top-0 left-0 text-3xl print:block hidden bg-white p-3">
