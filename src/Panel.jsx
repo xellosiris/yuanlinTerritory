@@ -7,8 +7,9 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import html2canvas from "html2canvas";
 import polylabel from "polylabel";
-
+import { saveAs } from "file-saver";
 const Panel = ({
   territories,
   seleted,
@@ -24,9 +25,17 @@ const Panel = ({
     };
   };
 
+  const onDownload = async () => {
+    const canvas = await html2canvas(document.querySelector("#TerritoryMap"), {
+      useCORS: true,
+    });
+    canvas.toBlob((blob) =>
+      saveAs(blob, `區域${seleted?.name ?? "全體區域"}號.png`)
+    );
+  };
   return (
     <div className="w-1/4 print:hidden block">
-      <List className="h-[calc(100vh-80px)] overflow-y-auto">
+      <List className="h-[calc(100vh-90px)] overflow-y-auto">
         <ListItem
           className={`${seleted === null && "bg-slate-400"}`}
           disablePadding
@@ -69,6 +78,14 @@ const Panel = ({
           }
           label="不顯示背景顏色"
         />
+        <Button
+          className="w-full"
+          disabled={seleted === null}
+          variant="contained"
+          onClick={onDownload}
+        >
+          下載圖片
+        </Button>
       </div>
     </div>
   );

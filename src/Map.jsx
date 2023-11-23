@@ -6,7 +6,7 @@ import Panel from "./Panel";
 import Territory from "./Terriotory";
 const Map = () => {
   const [territories, setTerritories] = useState([]);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState(null);
   const [disableBgColor, setdisableBgColor] = useState(true);
   const getTerritories = async () => {
     const snapshot = await getDocs(collection(db, "Territories"));
@@ -24,6 +24,7 @@ const Map = () => {
   return (
     <div className="flex">
       <GoogleMap
+        id="TerritoryMap"
         mapContainerClassName="print:w-full w-3/4 h-screen"
         options={{
           center: selected?.center ?? { lat: 23.948507, lng: 120.45138 },
