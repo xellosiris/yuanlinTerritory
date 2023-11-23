@@ -18,10 +18,15 @@ const Panel = ({
   disableBgColor,
   ondisableBgColor,
 }) => {
-  const groupedTerritories = Object.groupBy(
-    territories.sort((a, b) => a.name - b.name),
-    ({ location }) => location
-  );
+  const groupedTerritories = territories
+    .sort((a, b) => a.name - b.name)
+    .reduce((group, territory) => {
+      const { location } = territory;
+      group[location] = group[location] ?? [];
+      group[location].push(territory);
+      return group;
+    }, {});
+
   const locations = ["員林", "大村", "埔心", "溪湖", "二林", "芳苑", "大城"];
 
   const getCenter = (coordinates) => {
