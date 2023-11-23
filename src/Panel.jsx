@@ -7,9 +7,9 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import polylabel from "polylabel";
-import { saveAs } from "file-saver";
 const Panel = ({
   territories,
   seleted,
@@ -34,35 +34,30 @@ const Panel = ({
     );
   };
   return (
-    <div className="w-1/4 print:hidden block">
-      <List className="h-[calc(100vh-90px)] overflow-y-auto">
-        <ListItem
-          className={`${seleted === null && "bg-slate-400"}`}
-          disablePadding
-          onClick={() => onSelected(null)}
-        >
-          <ListItemButton>
+    <div className="w-1/4 h-[calc(100vh-87px)] print:hidden block">
+      <List className="h-full overflow-y-auto">
+        <ListItem disablePadding>
+          <ListItemButton
+            selected={seleted === null}
+            onClick={() => onSelected(null)}
+          >
             <ListItemText>全體區域</ListItemText>
           </ListItemButton>
         </ListItem>
         {territories
           .sort((a, b) => a.name - b.name)
           .map((territory) => (
-            <ListItem
-              className={`${
-                territory.name === seleted?.name ? "bg-slate-400" : ""
-              }`}
-              disablePadding
-              onClick={() =>
-                onSelected({
-                  name: territory.name,
-                  center: getCenter(territory.coordinates),
-                  zoom: 16,
-                })
-              }
-              key={territory.name}
-            >
-              <ListItemButton>
+            <ListItem disablePadding key={territory.name}>
+              <ListItemButton
+                selected={territory.name === seleted?.name}
+                onClick={() =>
+                  onSelected({
+                    name: territory.name,
+                    center: getCenter(territory.coordinates),
+                    zoom: 16,
+                  })
+                }
+              >
                 <ListItemText>{territory.name}號</ListItemText>
               </ListItemButton>
             </ListItem>
