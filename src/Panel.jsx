@@ -48,7 +48,7 @@ const Panel = ({
   return (
     <div className="w-1/4 print:hidden block">
       <List
-        className="h-[calc(100vh-100px)] overflow-y-auto"
+        className="h-[calc(100vh-120px)] overflow-y-auto"
         subheader={<li />}
       >
         <ListItem disablePadding>
