@@ -57,7 +57,6 @@ export const MapPolygon = ({
     return () => {
       poly.setMap(null);
       window.google.maps.event.removeListener($over);
-      window.google.maps.event.removeListener($out);
       window.google.maps.event.removeListener($click);
     };
   }, [coordinates, map, styles]);
