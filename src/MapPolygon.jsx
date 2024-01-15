@@ -46,6 +46,10 @@ export const MapPolygon = ({
       }
     );
 
+    const $out = window.google.maps.event.addListener(poly, "mouseout", () => {
+      setIsHovered(false);
+    });
+
     const $click = window.google.maps.event.addListener(poly, "click", () => {
       onSetTerritoryInfo(territory);
     });
