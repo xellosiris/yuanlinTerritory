@@ -6,13 +6,12 @@ import { getFirestore } from "firebase/firestore/lite"; // TODO: Add SDKs for Fi
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyC7p0xEsFeKGh2L4NaqGKjMXVwA8HHAiFo",
-  authDomain: "jw-map-56ba6.firebaseapp.com",
-  projectId: "jw-map-56ba6",
-  storageBucket: "jw-map-56ba6.appspot.com",
-  messagingSenderId: "460925473351",
-  appId: "1:460925473351:web:fd661cb25de90c9da71762",
-  measurementId: "G-2YJHZNSKE8",
+  apiKey: "AIzaSyBzBYViVdxYDqY4az59nxsjLBJZDM5fITU",
+  authDomain: "yuanlinterritory.firebaseapp.com",
+  projectId: "yuanlinterritory",
+  storageBucket: "yuanlinterritory.appspot.com",
+  messagingSenderId: "618682200684",
+  appId: "1:618682200684:web:d7da2261b72f74aa541e49",
 };
 
 // Initialize Firebase
