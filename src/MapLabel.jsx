@@ -2,9 +2,9 @@ import { useGoogleMap } from "@react-google-maps/api";
 import polylabel from "polylabel";
 import { useEffect, useMemo, useRef } from "react";
 
-export const MapLabel = ({ territory, position }) => {
+export const MapLabel = ({ territory }) => {
   const map = useGoogleMap();
-  const { name, coordinates, lastStartDate, lastEndDate } = territory;
+  const { name, coordinates, status } = territory;
   const centerSpot = useMemo(() => {
     if (territory) {
       const p = polylabel([coordinates.map(({ lat, lng }) => [lng, lat, 0.0])]);
@@ -19,23 +19,19 @@ export const MapLabel = ({ territory, position }) => {
 
   useEffect(() => {
     markerRef.current = new window.google.maps.Marker({
-      optimized: true,
-      position: centerSpot ?? position,
+      position: centerSpot,
       label: {
         className: "territory-number",
         text: name.toString(),
       },
       map,
-      icon:
-        !!lastStartDate && !lastEndDate
-          ? null
-          : "https://maps.gstatic.com/mapfiles/transparent.png",
+      icon: status !== "進行中" ? "https://maps.gstatic.com/mapfiles/transparent.png" : null,
     });
 
     return () => {
       markerRef.current.setMap(null);
     };
-  }, []);
+  }, [status, name, centerSpot, map]);
 
   useEffect(() => {
     if (markerRef.current) {
@@ -45,10 +41,4 @@ export const MapLabel = ({ territory, position }) => {
       });
     }
   }, [name]);
-
-  useEffect(() => {
-    if (markerRef.current) {
-      markerRef.current.setPosition(centerSpot ?? position);
-    }
-  }, [centerSpot, position]);
 };

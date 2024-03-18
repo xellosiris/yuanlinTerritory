@@ -1,6 +1,9 @@
 import {
-  Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   List,
   ListItem,
@@ -8,16 +11,9 @@ import {
   ListItemText,
   ListSubheader,
 } from "@mui/material";
-import { saveAs } from "file-saver";
-import html2canvas from "html2canvas";
+
 import polylabel from "polylabel";
-const Panel = ({
-  territories,
-  seleted,
-  onSelected,
-  disableBgColor,
-  ondisableBgColor,
-}) => {
+const Panel = ({ territories, selected, onSelected, disableBgColor, ondisableBgColor }) => {
   const groupedTerritories = territories
     .sort((a, b) => a.name - b.name)
     .reduce((group, territory) => {
@@ -37,70 +33,49 @@ const Panel = ({
     };
   };
 
-  const onDownload = async () => {
-    const canvas = await html2canvas(document.querySelector("#TerritoryMap"), {
-      useCORS: true,
-    });
-    canvas.toBlob((blob) =>
-      saveAs(blob, `區域${seleted?.name ?? "全體區域"}號.png`)
-    );
-  };
   return (
-    <div className="w-1/4 h-[100dvh] print:hidden flex flex-col pb-3">
-      <List className="flex-auto overflow-y-auto" subheader={<li />}>
-        <ListItem disablePadding>
-          <ListItemButton
-            selected={seleted === null}
-            onClick={() => onSelected(null)}
-          >
-            <ListItemText>全體區域</ListItemText>
-          </ListItemButton>
-        </ListItem>
-        {JSON.stringify(groupedTerritories) !== "{}" &&
-          locations.map((location) => (
-            <li key={location}>
-              <ul>
-                <ListSubheader>{location}</ListSubheader>
-                {groupedTerritories[location].map((territory) => (
-                  <ListItem disablePadding key={territory.name}>
-                    <ListItemButton
-                      selected={territory.name === seleted?.name}
-                      onClick={() =>
-                        onSelected({
-                          name: territory.name,
-                          center: getCenter(territory.coordinates),
-                          zoom: 16,
-                        })
-                      }
-                    >
-                      <ListItemText>{territory.name}號</ListItemText>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </ul>
-            </li>
-          ))}
-      </List>
-      <div className="space-y-2">
+    <Dialog open fullWidth>
+      <DialogTitle>請選擇區域</DialogTitle>
+      <DialogContent>
+        <List className="flex-auto overflow-y-auto" subheader={<li />}>
+          <ListItem disablePadding>
+            <ListItemButton selected={selected === null} onClick={() => onSelected(null)}>
+              <ListItemText>全體區域</ListItemText>
+            </ListItemButton>
+          </ListItem>
+          {JSON.stringify(groupedTerritories) !== "{}" &&
+            locations.map((location) => (
+              <li key={location}>
+                <ul>
+                  <ListSubheader>{location}</ListSubheader>
+                  {groupedTerritories[location].map((territory) => (
+                    <ListItem disablePadding key={territory.name}>
+                      <ListItemButton
+                        selected={territory.name === selected?.name}
+                        onClick={() =>
+                          onSelected({
+                            name: territory.name,
+                            center: getCenter(territory.coordinates),
+                            zoom: 16,
+                          })
+                        }
+                      >
+                        <ListItemText>{territory.name}號</ListItemText>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </ul>
+              </li>
+            ))}
+        </List>
+      </DialogContent>
+      <DialogActions>
         <FormControlLabel
-          control={
-            <Checkbox
-              checked={disableBgColor}
-              onChange={(e, checked) => ondisableBgColor(checked)}
-            />
-          }
+          control={<Checkbox checked={disableBgColor} onChange={(e, checked) => ondisableBgColor(checked)} />}
           label="不顯示背景顏色"
         />
-        <Button
-          className="w-full"
-          disabled={seleted === null}
-          variant="contained"
-          onClick={onDownload}
-        >
-          下載圖片
-        </Button>
-      </div>
-    </div>
+      </DialogActions>
+    </Dialog>
   );
 };
 

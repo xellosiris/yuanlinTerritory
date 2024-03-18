@@ -15,15 +15,9 @@ const Territory = ({ territory, disableBgColor }) => {
 
   return (
     <Fragment>
-      <MapPolygon
-        territory={territory}
-        disableBgColor={disableBgColor}
-        onSetTerritoryInfo={onSetTerritoryInfo}
-      />
+      <MapPolygon territory={territory} disableBgColor={disableBgColor} onSetTerritoryInfo={onSetTerritoryInfo} />
       <MapLabel territory={territory} />
-      {!!territoryInfo && (
-        <TerritoryInfo territory={territory} onClose={onClose} />
-      )}
+      {!!territoryInfo && <TerritoryInfo territory={territory} onClose={onClose} />}
     </Fragment>
   );
 };
