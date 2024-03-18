@@ -1,14 +1,16 @@
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
-import { GoogleMap, useGoogleMap } from "@react-google-maps/api";
+import { Map, useMap } from "@vis.gl/react-google-maps";
+
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import { Fragment, useEffect, useState } from "react";
 import useGoogleSheets from "use-google-sheets";
 import Panel from "./Panel";
 import Territory from "./Terriotory";
-const Map = () => {
+
+const MapContent = () => {
   const { data, loading, error } = useGoogleSheets({
     apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
     sheetId: import.meta.env.VITE_SHEET_ID,
@@ -32,26 +34,23 @@ const Map = () => {
     });
     canvas.toBlob((blob) => saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`));
   };
-
   return (
     <div className="flex">
       {loading && <div>Loading...</div>}
       {error && <div>Error</div>}
       {!!territories && (
         <Fragment>
-          <GoogleMap
-            id="TerritoryMap"
-            mapContainerClassName="w-full h-screen relative"
-            options={{
-              center: selected?.center ?? { lat: 23.948507, lng: 120.45138 },
-              zoom: selected?.zoom ?? 12,
-              disableDefaultUI: true,
-            }}
+          <Map
+            className="w-full h-screen relative"
+            gestureHandling={"greedy"}
+            disableDefaultUI={true}
+            defaultCenter={selected?.center ?? { lat: 23.948507, lng: 120.45138 }}
+            defaultZoom={selected?.zoom ?? 12}
+            mapId="yuanlin"
           >
             <div className="absolute top-0 left-0 text-3xl print:block hidden bg-white p-3">
               區域號碼：{selected?.name ?? "全體區域"}
             </div>
-            <ZoomHandler />
             {!selected && territories.map((territory) => <Territory key={territory.name} territory={territory} />)}
             {!!selected && (
               <Territory
@@ -73,7 +72,7 @@ const Map = () => {
                 </IconButton>
               </div>
             </div>
-          </GoogleMap>
+          </Map>
 
           {open && (
             <Panel
@@ -91,10 +90,10 @@ const Map = () => {
   );
 };
 
-export default Map;
+export default MapContent;
 
 function ZoomHandler() {
-  const map = useGoogleMap();
+  const map = useMap();
   useEffect(() => {
     if (map) {
       const $ = map.addListener("zoom_changed", () => {

@@ -1,4 +1,4 @@
-import { useGoogleMap } from "@react-google-maps/api";
+import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
 
 const bgColor = {
@@ -11,12 +11,8 @@ const bgColor = {
   大城: "#f3d744",
 };
 
-export const MapPolygon = ({
-  territory,
-  disableBgColor,
-  onSetTerritoryInfo,
-}) => {
-  const map = useGoogleMap();
+export const MapPolygon = ({ territory, disableBgColor, onSetTerritoryInfo }) => {
+  const map = useMap();
   const { location, coordinates, lastStartDate } = territory;
   const [isHovered, setIsHovered] = useState(false);
 
@@ -38,13 +34,9 @@ export const MapPolygon = ({
       ...styles,
     }));
 
-    const $over = window.google.maps.event.addListener(
-      poly,
-      "mouseover",
-      () => {
-        setIsHovered(true);
-      }
-    );
+    const $over = window.google.maps.event.addListener(poly, "mouseover", () => {
+      setIsHovered(true);
+    });
 
     const $out = window.google.maps.event.addListener(poly, "mouseout", () => {
       setIsHovered(false);

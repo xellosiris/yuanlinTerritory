@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 
 export const TerritoryInfo = ({ territory, onClose }) => {
-  const { name, person, lastStartDate, lastEndDate, lastPeriod, catgory } =
-    territory;
+  const { name, person, lastStartDate, lastEndDate, lastPeriod, catgory, link } = territory;
 
   return (
     <Dialog fullWidth open onClose={onClose}>

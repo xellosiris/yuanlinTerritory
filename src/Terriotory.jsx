@@ -2,7 +2,6 @@ import { Fragment, useState } from "react";
 import { MapLabel } from "./MapLabel";
 import { MapPolygon } from "./MapPolygon";
 import { TerritoryInfo } from "./TerritoryInfo";
-
 const Territory = ({ territory, disableBgColor }) => {
   const [territoryInfo, setTerritoryInfo] = useState(null);
   const onSetTerritoryInfo = (territory) => {

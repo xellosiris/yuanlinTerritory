@@ -1,10 +1,13 @@
-import { useGoogleMap } from "@react-google-maps/api";
+import { AdvancedMarker, Pin, useMap } from "@vis.gl/react-google-maps";
+import clsx from "clsx";
 import polylabel from "polylabel";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 
 export const MapLabel = ({ territory }) => {
-  const map = useGoogleMap();
-  const { name, coordinates, status } = territory;
+  const map = useMap();
+  const { zoom } = map;
+  const { coordinates, name, status } = territory;
+  const scale = zoom <= 12 ? 0.6 : zoom > 12 ? 1 : zoom > 15 ? null : 0.8;
   const centerSpot = useMemo(() => {
     if (territory) {
       const p = polylabel([coordinates.map(({ lat, lng }) => [lng, lat, 0.0])]);
@@ -13,32 +16,14 @@ export const MapLabel = ({ territory }) => {
         lng: p[0],
       };
     }
-  }, [territory]);
-
-  const markerRef = useRef();
-
-  useEffect(() => {
-    markerRef.current = new window.google.maps.Marker({
-      position: centerSpot,
-      label: {
-        className: "territory-number",
-        text: name.toString(),
-      },
-      map,
-      icon: status !== "進行中" ? "https://maps.gstatic.com/mapfiles/transparent.png" : null,
-    });
-
-    return () => {
-      markerRef.current.setMap(null);
-    };
-  }, [status, name, centerSpot, map]);
-
-  useEffect(() => {
-    if (markerRef.current) {
-      markerRef.current.setLabel({
-        className: "territory-number",
-        text: name.toString(),
-      });
-    }
-  }, [name]);
+  }, [territory, coordinates]);
+  return (
+    <AdvancedMarker
+      className={clsx(zoom <= 12 && "text-sm", zoom > 12 && "text-xl", zoom > 15 && "text-3xl")}
+      position={centerSpot}
+    >
+      {status === "進行中" && <Pin scale={scale} background={"#FBBC04"} glyphColor={"#000"} borderColor={"#000"} />}
+      {name}
+    </AdvancedMarker>
+  );
 };
