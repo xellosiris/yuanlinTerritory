@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import polylabel from "polylabel";
-const Panel = ({ territories, selected, onSelected, disableBgColor, ondisableBgColor }) => {
+const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, ondisableBgColor }) => {
   const groupedTerritories = territories
     .sort((a, b) => a.name - b.name)
     .reduce((group, territory) => {
@@ -34,7 +34,7 @@ const Panel = ({ territories, selected, onSelected, disableBgColor, ondisableBgC
   };
 
   return (
-    <Dialog open fullWidth>
+    <Dialog open fullWidth onClose={onClose}>
       <DialogTitle>請選擇區域</DialogTitle>
       <DialogContent>
         <List className="flex-auto overflow-y-auto" subheader={<li />}>

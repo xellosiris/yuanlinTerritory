@@ -23,6 +23,9 @@ const Map = () => {
     setOpen(false);
   };
 
+  const onClose = () => {
+    setOpen(false);
+  };
   const onDownload = async () => {
     const canvas = await html2canvas(document.querySelector("#TerritoryMap"), {
       useCORS: true,
@@ -76,6 +79,7 @@ const Map = () => {
             <Panel
               territories={territories}
               onSelected={onSelected}
+              onClose={onClose}
               disableBgColor={disableBgColor}
               ondisableBgColor={(b) => setdisableBgColor(b)}
               seleted={selected}
