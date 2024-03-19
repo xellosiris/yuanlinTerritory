@@ -19,10 +19,21 @@ export const MapLabel = ({ territory }) => {
   }, [territory, coordinates]);
   return (
     <AdvancedMarker
-      className={clsx(zoom <= 12 && "text-sm", zoom > 12 && "text-xl", zoom > 15 && "text-3xl")}
+      className={clsx(
+        zoom <= 12 && "text-[11px]",
+        zoom > 12 && "text-xl",
+        zoom > 15 && "text-3xl",
+      )}
       position={centerSpot}
     >
-      {status === "進行中" && <Pin scale={scale} background={"#FBBC04"} glyphColor={"#000"} borderColor={"#000"} />}
+      {status === "進行中" && (
+        <Pin
+          scale={scale}
+          background={"#FBBC04"}
+          glyphColor={"#000"}
+          borderColor={"#000"}
+        />
+      )}
       {name}
     </AdvancedMarker>
   );

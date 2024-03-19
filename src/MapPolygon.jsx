@@ -1,4 +1,5 @@
-import { useMap } from "@vis.gl/react-google-maps";
+import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useMemo } from "react";
 import { useEffect, useRef, useState } from "react";
 
 const bgColor = {
@@ -11,13 +12,17 @@ const bgColor = {
   大城: "#f3d744",
 };
 
-export const MapPolygon = ({ territory, disableBgColor, onSetTerritoryInfo }) => {
+export const MapPolygon = ({
+  territory,
+  disableBgColor,
+  onSetTerritoryInfo,
+}) => {
   const map = useMap();
+  const maps = useMapsLibrary("maps");
+  const core = useMapsLibrary("core");
   const { location, coordinates, lastStartDate } = territory;
   const [isHovered, setIsHovered] = useState(false);
-
-  const polygonRef = useRef();
-
+  const polygon = useRef(new maps.Polygon()).current;
   const styles = {
     strokeColor: "black",
     strokeOpacity: 1,
@@ -26,36 +31,33 @@ export const MapPolygon = ({ territory, disableBgColor, onSetTerritoryInfo }) =>
     fillOpacity: disableBgColor ? 0 : lastStartDate ? 0.5 : 0.1,
   };
 
-  useEffect(() => {
-    const poly = (polygonRef.current = new window.google.maps.Polygon({
+  useMemo(() => {
+    const polygonOptions = {
       paths: coordinates,
       map,
       clickable: true,
       ...styles,
-    }));
-
-    const $over = window.google.maps.event.addListener(poly, "mouseover", () => {
+    };
+    polygon.setOptions(polygonOptions);
+  }, [polygon, map, styles]);
+  useEffect(() => {
+    core.event.addListener(polygon, "mouseover", () => {
       setIsHovered(true);
     });
 
-    const $out = window.google.maps.event.addListener(poly, "mouseout", () => {
+    core.event.addListener(polygon, "mouseout", () => {
       setIsHovered(false);
     });
 
-    const $click = window.google.maps.event.addListener(poly, "click", () => {
+    core.event.addListener(polygon, "click", () => {
       onSetTerritoryInfo(territory);
     });
 
     return () => {
-      poly.setMap(null);
-      window.google.maps.event.removeListener($over);
-      window.google.maps.event.removeListener($click);
+      polygon.setMap(null);
+      core.event.clearInstanceListeners(polygon);
     };
-  }, [coordinates, map, styles]);
-
-  useEffect(() => {
-    polygonRef.current?.setOptions(styles);
-  }, [isHovered]);
+  }, [core]);
 
   return null;
 };

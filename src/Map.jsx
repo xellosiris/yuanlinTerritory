@@ -1,11 +1,11 @@
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
-import { Map, useMap } from "@vis.gl/react-google-maps";
+import { Map } from "@vis.gl/react-google-maps";
 
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import useGoogleSheets from "use-google-sheets";
 import Panel from "./Panel";
 import Territory from "./Terriotory";
@@ -19,7 +19,10 @@ const MapContent = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [disableBgColor, setdisableBgColor] = useState(true);
-  const territories = data[0]?.data.map((t) => ({ ...t, coordinates: JSON.parse(t.coordinates) }));
+  const territories = data[0]?.data.map((t) => ({
+    ...t,
+    coordinates: JSON.parse(t.coordinates),
+  }));
   const onSelected = (obj) => {
     setSelected(obj);
     setOpen(false);
@@ -32,7 +35,9 @@ const MapContent = () => {
     const canvas = await html2canvas(document.querySelector("#TerritoryMap"), {
       useCORS: true,
     });
-    canvas.toBlob((blob) => saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`));
+    canvas.toBlob((blob) =>
+      saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`),
+    );
   };
   return (
     <div className="flex">
@@ -41,32 +46,41 @@ const MapContent = () => {
       {!!territories && (
         <Fragment>
           <Map
-            className="w-full h-screen relative"
+            className="relative h-screen w-full"
             gestureHandling={"greedy"}
             disableDefaultUI={true}
-            defaultCenter={selected?.center ?? { lat: 23.948507, lng: 120.45138 }}
+            defaultCenter={
+              selected?.center ?? { lat: 23.948507, lng: 120.45138 }
+            }
             defaultZoom={selected?.zoom ?? 12}
             mapId="yuanlin"
           >
-            <div className="absolute top-0 left-0 text-3xl print:block hidden bg-white p-3">
+            <div className="absolute left-0 top-0 hidden bg-white p-3 text-3xl print:block">
               區域號碼：{selected?.name ?? "全體區域"}
             </div>
-            {!selected && territories.map((territory) => <Territory key={territory.name} territory={territory} />)}
+            {!selected &&
+              territories.map((territory) => (
+                <Territory key={territory.name} territory={territory} />
+              ))}
             {!!selected && (
               <Territory
                 key={selected}
                 disableBgColor={disableBgColor}
-                territory={territories.find((territory) => territory.name === selected.name)}
+                territory={territories.find(
+                  (territory) => territory.name === selected.name,
+                )}
               />
             )}
-            <div className="flex flex-col gap-2 absolute top-2 left-2 print:hidden">
+            <div className="absolute left-2 top-2 flex flex-col gap-2 print:hidden">
               <div className="rounded-full bg-gray-500">
                 <IconButton onClick={() => setOpen(!open)}>
                   <MenuIcon className="text-white" />
                 </IconButton>
               </div>
 
-              <div className={`rounded-full ${!!selected ? "bg-slate-800" : "bg-gray-300"} `}>
+              <div
+                className={`rounded-full ${!!selected ? "bg-slate-800" : "bg-gray-300"} `}
+              >
                 <IconButton disabled={!selected} onClick={onDownload}>
                   <FileDownloadIcon className="text-white" />
                 </IconButton>
@@ -91,26 +105,3 @@ const MapContent = () => {
 };
 
 export default MapContent;
-
-function ZoomHandler() {
-  const map = useMap();
-  useEffect(() => {
-    if (map) {
-      const $ = map.addListener("zoom_changed", () => {
-        const zoom = map.getZoom();
-        if (zoom <= 13) {
-          document.body.classList.add("hide-number");
-        } else {
-          document.body.classList.remove("hide-number");
-          document.body.style.setProperty("--number-size", zoom > 15 ? "50px" : "20px");
-        }
-      });
-
-      return () => {
-        $.remove();
-      };
-    }
-  }, [map]);
-
-  return null;
-}
