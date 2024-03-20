@@ -1,5 +1,4 @@
-import { useMap, useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useMemo } from "react";
+import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
 
 const bgColor = {
@@ -12,17 +11,13 @@ const bgColor = {
   大城: "#f3d744",
 };
 
-export const MapPolygon = ({
-  territory,
-  disableBgColor,
-  onSetTerritoryInfo,
-}) => {
+export const MapPolygon = ({ territory, disableBgColor, onSetTerritoryInfo }) => {
   const map = useMap();
-  const maps = useMapsLibrary("maps");
-  const core = useMapsLibrary("core");
   const { location, coordinates, lastStartDate } = territory;
   const [isHovered, setIsHovered] = useState(false);
-  const polygon = useRef(new maps.Polygon()).current;
+
+  const polygonRef = useRef();
+
   const styles = {
     strokeColor: "black",
     strokeOpacity: 1,
@@ -31,33 +26,36 @@ export const MapPolygon = ({
     fillOpacity: disableBgColor ? 0 : lastStartDate ? 0.5 : 0.1,
   };
 
-  useMemo(() => {
-    const polygonOptions = {
+  useEffect(() => {
+    const poly = (polygonRef.current = new window.google.maps.Polygon({
       paths: coordinates,
       map,
       clickable: true,
       ...styles,
-    };
-    polygon.setOptions(polygonOptions);
-  }, [polygon, map, styles]);
-  useEffect(() => {
-    core.event.addListener(polygon, "mouseover", () => {
+    }));
+
+    const $over = window.google.maps.event.addListener(poly, "mouseover", () => {
       setIsHovered(true);
     });
 
-    core.event.addListener(polygon, "mouseout", () => {
+    const $out = window.google.maps.event.addListener(poly, "mouseout", () => {
       setIsHovered(false);
     });
 
-    core.event.addListener(polygon, "click", () => {
+    const $click = window.google.maps.event.addListener(poly, "click", () => {
       onSetTerritoryInfo(territory);
     });
 
     return () => {
-      polygon.setMap(null);
-      core.event.clearInstanceListeners(polygon);
+      poly.setMap(null);
+      window.google.maps.event.removeListener($over);
+      window.google.maps.event.removeListener($click);
     };
-  }, [core]);
+  }, [coordinates, map, styles]);
+
+  useEffect(() => {
+    polygonRef.current?.setOptions(styles);
+  }, [isHovered]);
 
   return null;
 };
