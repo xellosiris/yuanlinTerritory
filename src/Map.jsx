@@ -1,8 +1,8 @@
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
-import { Map } from "@vis.gl/react-google-maps";
-
+import { AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
 import { Fragment, useState } from "react";
@@ -35,9 +35,7 @@ const MapContent = () => {
     const canvas = await html2canvas(document.querySelector("#TerritoryMap"), {
       useCORS: true,
     });
-    canvas.toBlob((blob) =>
-      saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`),
-    );
+    canvas.toBlob((blob) => saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`));
   };
   return (
     <div className="flex">
@@ -49,26 +47,22 @@ const MapContent = () => {
             className="relative h-screen w-full"
             gestureHandling={"greedy"}
             disableDefaultUI={true}
-            defaultCenter={
-              selected?.center ?? { lat: 23.948507, lng: 120.45138 }
-            }
+            defaultCenter={selected?.center ?? { lat: 23.948507, lng: 120.45138 }}
             defaultZoom={selected?.zoom ?? 12}
             mapId="yuanlin"
           >
             <div className="absolute left-0 top-0 hidden bg-white p-3 text-3xl print:block">
               區域號碼：{selected?.name ?? "全體區域"}
             </div>
-            {!selected &&
-              territories.map((territory) => (
-                <Territory key={territory.name} territory={territory} />
-              ))}
+            <AdvancedMarker position={{ lat: 23.956912, lng: 120.575596 }}>
+              <HomeIcon className="text-yellow-500" />
+            </AdvancedMarker>
+            {!selected && territories.map((territory) => <Territory key={territory.name} territory={territory} />)}
             {!!selected && (
               <Territory
                 key={selected}
                 disableBgColor={disableBgColor}
-                territory={territories.find(
-                  (territory) => territory.name === selected.name,
-                )}
+                territory={territories.find((territory) => territory.name === selected.name)}
               />
             )}
             <div className="absolute left-2 top-2 flex flex-col gap-2 print:hidden">
@@ -78,9 +72,7 @@ const MapContent = () => {
                 </IconButton>
               </div>
 
-              <div
-                className={`rounded-full ${!!selected ? "bg-slate-800" : "bg-gray-300"} `}
-              >
+              <div className={`rounded-full ${!!selected ? "bg-slate-800" : "bg-gray-300"} `}>
                 <IconButton disabled={!selected} onClick={onDownload}>
                   <FileDownloadIcon className="text-white" />
                 </IconButton>
