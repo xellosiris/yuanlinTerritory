@@ -91,8 +91,8 @@ const MapContent = () => {
               onSelected={onSelected}
               onClose={onClose}
               disableBgColor={disableBgColor}
-              ondisableBgColor={(b) => setDisableBgColor(b)}
-              seleted={selected}
+              onDisableBgColor={(b) => setDisableBgColor(b)}
+              selected={selected}
             />
           )}
         </Fragment>

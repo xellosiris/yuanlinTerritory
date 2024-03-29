@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import polylabel from "polylabel";
-const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, ondisableBgColor }) => {
+const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, onDisableBgColor }) => {
   const groupedTerritories = territories
     .sort((a, b) => a.name - b.name)
     .reduce((group, territory) => {
@@ -71,7 +71,7 @@ const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, ond
       </DialogContent>
       <DialogActions>
         <FormControlLabel
-          control={<Checkbox checked={disableBgColor} onChange={(e, checked) => ondisableBgColor(checked)} />}
+          control={<Checkbox checked={disableBgColor} onChange={(e, checked) => onDisableBgColor(checked)} />}
           label="不顯示背景顏色"
         />
       </DialogActions>
