@@ -25,7 +25,11 @@ const MapContent = () => {
   }));
   const onSelected = (obj) => {
     setSelected(obj);
-    setCameraProps({ center: obj.center, zoom: 16 });
+    if (!!obj) {
+      setCameraProps({ center: obj.center, zoom: 16 });
+    } else {
+      setCameraProps({ center: { lat: 23.948507, lng: 120.45138 }, zoom: 12 });
+    }
     setOpen(false);
   };
 
