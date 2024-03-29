@@ -5,11 +5,10 @@ import { IconButton } from "@mui/material";
 import { AdvancedMarker, Map } from "@vis.gl/react-google-maps";
 import { saveAs } from "file-saver";
 import html2canvas from "html2canvas";
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import useGoogleSheets from "use-google-sheets";
 import Panel from "./Panel";
-import Territory from "./Terriotory";
-
+import Territory from "./Territory";
 const MapContent = () => {
   const { data, loading, error } = useGoogleSheets({
     apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
@@ -17,14 +16,16 @@ const MapContent = () => {
     sheetsOptions: [{ id: "區域彙整", headerRowIndex: 1 }],
   });
   const [open, setOpen] = useState(false);
+  const [cameraProps, setCameraProps] = useState({ center: { lat: 23.948507, lng: 120.45138 }, zoom: 12 });
   const [selected, setSelected] = useState(null);
-  const [disableBgColor, setdisableBgColor] = useState(true);
+  const [disableBgColor, setDisableBgColor] = useState(true);
   const territories = data[0]?.data.map((t) => ({
     ...t,
     coordinates: JSON.parse(t.coordinates),
   }));
   const onSelected = (obj) => {
     setSelected(obj);
+    setCameraProps({ center: obj.center, zoom: 16 });
     setOpen(false);
   };
 
@@ -37,6 +38,9 @@ const MapContent = () => {
     });
     canvas.toBlob((blob) => saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`));
   };
+
+  const handleCameraChange = useCallback((e) => setCameraProps(e.detail), []);
+
   return (
     <div className="flex">
       {loading && <div>Loading...</div>}
@@ -45,11 +49,12 @@ const MapContent = () => {
         <Fragment>
           <Map
             className="relative h-screen w-full"
+            id="TerritoryMap"
             gestureHandling={"greedy"}
             disableDefaultUI={true}
-            defaultCenter={selected?.center ?? { lat: 23.948507, lng: 120.45138 }}
-            defaultZoom={selected?.zoom ?? 12}
-            mapId="yuanlin"
+            {...cameraProps}
+            onCameraChanged={handleCameraChange}
+            mapId="TerritoryMap"
           >
             <div className="absolute left-0 top-0 hidden bg-white p-3 text-3xl print:block">
               區域號碼：{selected?.name ?? "全體區域"}
@@ -86,7 +91,7 @@ const MapContent = () => {
               onSelected={onSelected}
               onClose={onClose}
               disableBgColor={disableBgColor}
-              ondisableBgColor={(b) => setdisableBgColor(b)}
+              ondisableBgColor={(b) => setDisableBgColor(b)}
               seleted={selected}
             />
           )}
