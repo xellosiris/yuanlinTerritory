@@ -11,8 +11,8 @@ import {
   ListItemText,
   ListSubheader,
 } from "@mui/material";
+import { getCenter } from "./helpers";
 
-import polylabel from "polylabel";
 const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, onDisableBgColor }) => {
   const groupedTerritories = territories
     .sort((a, b) => a.name - b.name)
@@ -24,14 +24,6 @@ const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, onD
     }, {});
 
   const locations = ["員林", "大村", "埔心", "溪湖", "二林", "芳苑", "大城"];
-
-  const getCenter = (coordinates) => {
-    const p = polylabel([coordinates.map(({ lat, lng }) => [lng, lat, 0.0])]);
-    return {
-      lat: p[1],
-      lng: p[0],
-    };
-  };
 
   return (
     <Dialog open fullWidth onClose={onClose}>
@@ -56,7 +48,7 @@ const Panel = ({ territories, selected, onSelected, onClose, disableBgColor, onD
                           onSelected({
                             name: territory.name,
                             center: getCenter(territory.coordinates),
-                            zoom: 16,
+                            coordinates: territory.coordinates,
                           })
                         }
                       >

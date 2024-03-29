@@ -38,6 +38,7 @@ const MapContent = () => {
   };
   const onDownload = async () => {
     const canvas = await html2canvas(document.querySelector("#TerritoryMap"), {
+      ignoreElements: (element) => element.classList.value?.includes("print:hidden"),
       useCORS: true,
     });
     canvas.toBlob((blob) => saveAs(blob, `區域${selected?.name ?? "全體區域"}號.png`));
@@ -66,6 +67,7 @@ const MapContent = () => {
             <AdvancedMarker position={{ lat: 23.956912, lng: 120.575596 }}>
               <HomeIcon className="text-yellow-500" />
             </AdvancedMarker>
+
             {!selected && territories.map((territory) => <Territory key={territory.name} territory={territory} />)}
             {!!selected && (
               <Territory

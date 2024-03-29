@@ -1,8 +1,8 @@
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import { AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 import clsx from "clsx";
-import polylabel from "polylabel";
 import { useMemo } from "react";
+import { getCenter } from "./helpers";
 export const MapLabel = ({ territory }) => {
   const map = useMap();
   const { zoom } = map;
@@ -10,11 +10,7 @@ export const MapLabel = ({ territory }) => {
   const scale = zoom <= 12 ? "small" : zoom > 12 ? "medium" : zoom > 15 ? null : "large";
   const centerSpot = useMemo(() => {
     if (territory) {
-      const p = polylabel([coordinates.map(({ lat, lng }) => [lng, lat, 0.0])]);
-      return {
-        lat: p[1],
-        lng: p[0],
-      };
+      return getCenter(coordinates);
     }
   }, [territory, coordinates]);
   return (
