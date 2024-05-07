@@ -1,7 +1,7 @@
 import { AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 import clsx from "clsx";
 import { useMemo } from "react";
-import { getCenter } from "./helpers";
+import { getCenter } from "../util/util";
 export const MapLabel = ({ territory }) => {
   const map = useMap();
   const { zoom } = map;

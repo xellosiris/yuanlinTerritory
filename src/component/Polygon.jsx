@@ -1,17 +1,8 @@
 import { useMap } from "@vis.gl/react-google-maps";
 import { useEffect, useRef, useState } from "react";
+import { LOCATIONS_BACKGROUNDS } from "../assets/locations";
 
-const bgColor = {
-  員林: "#364583",
-  大村: "#2d681c",
-  溪湖: "#ab4a3e",
-  埔心: "#d8941c",
-  二林: "#88ab10",
-  芳苑: "#364583",
-  大城: "#f3d744",
-};
-
-export const MapPolygon = ({ territory, disableBgColor, onSetTerritoryInfo }) => {
+export const MapPolygon = ({ territory, showBgColor, onSetTerritoryInfo }) => {
   const map = useMap();
   const { location, coordinates, lastStartDate } = territory;
   const [isHovered, setIsHovered] = useState(false);
@@ -21,9 +12,9 @@ export const MapPolygon = ({ territory, disableBgColor, onSetTerritoryInfo }) =>
   const styles = {
     strokeColor: "black",
     strokeOpacity: 1,
-    strokeWeight: disableBgColor || isHovered ? 3 : 1.2,
-    fillColor: isHovered ? "black" : bgColor[location],
-    fillOpacity: disableBgColor ? 0 : lastStartDate ? 0.5 : 0.1,
+    strokeWeight: showBgColor ? 1 : 4,
+    fillColor: isHovered ? "black" : LOCATIONS_BACKGROUNDS[location],
+    fillOpacity: showBgColor ? (lastStartDate ? 0.5 : 0.1) : 0,
   };
 
   useEffect(() => {
