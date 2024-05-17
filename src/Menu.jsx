@@ -26,7 +26,7 @@ const Menu = ({ territories, selectedTerritory, onSelectedTerritory, togglePubsS
         {selectedTerritory && <MenuItem Icon={HomeIcon} tip="顯示全體區域" onClick={() => onSelectedTerritory(null)} />}
         <MenuItem Icon={ChecklistIcon} tip="選擇單獨區域" onClick={() => setSelectOpen(true)} />
         {selectedTerritory && <MenuItem Icon={FileDownloadIcon} tip="下載區域" onClick={onDownload} />}
-        <MenuItem Icon={GroupsIcon} tip="顯示傳道員分佈" onClick={togglePubsShow} active={showPubs} />
+        {false && <MenuItem Icon={GroupsIcon} tip="顯示傳道員分佈" onClick={togglePubsShow} active={showPubs} />}
       </div>
       {selectOpen && (
         <TerritorySelect
